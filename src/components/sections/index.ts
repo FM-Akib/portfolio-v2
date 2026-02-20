@@ -1,0 +1,9 @@
+export { Hero } from "./hero";
+export { About } from "./about";
+export { Skills } from "./skills";
+export { Education } from "./education";
+export { Experience } from "./experience";
+export { Projects } from "./projects";
+export { Achievements } from "./achievements";
+export { Footer } from "./footer";
+export { SectionWrapper } from "./section-wrapper";
