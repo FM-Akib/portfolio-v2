@@ -43,9 +43,9 @@ export function Hero() {
           <h1 className="text-foreground text-center text-3xl font-bold tracking-tight md:text-left md:text-4xl lg:text-5xl xl:text-6xl">
             Hey, I&apos;m <span className="text-primary">Muntasir Akib</span>
           </h1>
-          <p className="text-lg font-medium md:text-xl min-h-10 flex items-center text-muted-foreground">
+          <div className="text-lg font-medium md:text-xl min-h-10 flex items-center text-muted-foreground">
             I&apos;m a <FlipWords words={roleWords} duration={3500} />
-          </p>
+          </div>
         </div>
 
         {/* Compelling description */}

@@ -55,6 +55,7 @@ export interface ExperienceEntry {
   company: string;
   period: string;
   description: string[];
+  logo?: string;
 }
 
 export interface Achievement {
