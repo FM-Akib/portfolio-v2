@@ -1,14 +1,14 @@
 import type { Profile, SocialLink } from "./types";
 
 export const profile: Profile = {
-  fullName: "Mohammad Fahim Muntasir Akib",
+  fullName: "Hey This is Akib",
   tagline: "FULL-STACK DEVELOPER",
   location: "Chattogram, Bangladesh",
   email: "muntasirakib08@gmail.com",
   phone: "+8801701741656",
   resumeUrl:
     "https://drive.usercontent.google.com/u/0/uc?id=16QxDGtNJFIDVwykuu5bWUW48iypmB_Hk&export=download",
-  avatar: "https://i.ibb.co/3Y5dJSN/profile1.png",
+  avatar: "/right1.png",
   siteUrl: "https://fahimmuntasirakib.me",
   bio: "Full-Stack Developer specializing in JavaScript, TypeScript, React, Next.js, Node.js, and MongoDB. IIUC CSE graduate with 600+ solved problems on online judges and multiple hackathon achievements.",
   strengths:

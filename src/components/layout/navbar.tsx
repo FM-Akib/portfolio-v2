@@ -18,7 +18,7 @@ import { profile } from "@/data";
 const LOGO_URL = "https://i.ibb.co/DWxtttS/logo.png";
 
 const navLinks = [
-  { href: "#hero", label: "Home" },
+  // { href: "#hero", label: "Home" },
   { href: "#experience", label: "Experience" },
   { href: "#skills", label: "Skills" },
   { href: "#projects", label: "Projects" },
@@ -30,13 +30,13 @@ const navLinks = [
 
 function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
   return (
-    <ul className="flex flex-col gap-6 md:flex-row md:gap-8">
+    <ul className="flex flex-col gap-3 md:flex-row md:gap-8">
       {navLinks.map(({ href, label }) => (
         <li key={href}>
           <Link
             href={href}
             onClick={onNavigate}
-            className="text-muted-foreground hover:text-foreground text-sm font-medium transition-colors"
+            className="text-muted-foreground hover:text-foreground dark:hover:bg-emerald-600 hover:bg-emerald-100 px-1 py-1 rounded text-sm font-medium transition-colors"
           >
             {label}
           </Link>
@@ -54,21 +54,26 @@ export function Navbar() {
       <nav className="container flex h-14 items-center justify-between px-4 md:px-6">
         <Link
           href="#hero"
-          className="relative h-9 w-28 sm:h-10 sm:w-32"
+          className="relative h-9 w-28 sm:h-10 sm:w-32 dark:flex dark:items-center dark:justify-center"
           aria-label="Home"
         >
           <Image
             src={LOGO_URL}
             alt="FM-Akib"
             fill
-            className="object-contain object-left"
+            className="object-contain object-left dark:hidden"
             sizes="(max-width: 640px) 112px, 128px"
             priority
           />
+          <h1 className="text-xl font-semibold tracking-tight text-foreground sm:text-xl hidden dark:block">
+            <span className="text-amber-400">FM-</span>Akib
+          </h1>
         </Link>
 
-        <div className="hidden md:flex md:items-center md:gap-4">
+        <div className="hidden md:flex md:items-center md:gap-4 ">
           <NavLinks />
+        </div>
+        <div className="hidden md:flex md:items-center md:gap-4 ">
           <ThemeToggle />
           <Button asChild size="sm" variant="outline" className="rounded-full">
             <a href={`tel:${profile.phone}`} aria-label="Call">
@@ -85,13 +90,16 @@ export function Navbar() {
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="border-border bg-background">
+            <SheetContent
+              side="right"
+              className="border-border bg-background gap-0"
+            >
               <SheetHeader>
                 <SheetTitle className="text-foreground">Menu</SheetTitle>
               </SheetHeader>
-              <div className="mt-8 flex flex-col gap-4 pt-4">
+              <div className=" flex flex-col gap-3 px-6">
                 <NavLinks onNavigate={() => setSheetOpen(false)} />
-                <Button asChild variant="outline" className="mt-4">
+                <Button asChild variant="outline" className="mt-2">
                   <a href={`tel:${profile.phone}`}>{profile.phone}</a>
                 </Button>
               </div>

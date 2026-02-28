@@ -21,36 +21,67 @@ const iconMap = {
   facebook: Facebook,
 };
 
-const taglineWords = [
-  "FULL-STACK DEVELOPER",
-  "MERN STACK",
-  "SOFTWARE ENGINEER",
+const roleWords = [
+  "Full-Stack Developer",
+  "Software Engineer",
+  "Problem Solver",
 ];
 
 export function Hero() {
   return (
     <section
       id="hero"
-      className="container flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center gap-6 px-4 py-12 sm:gap-8 sm:py-16 md:flex-row md:gap-12 md:py-20 lg:py-24 max-w-6xl mx-auto"
+      className="container flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center gap-8 px-4 py-12 sm:gap-10 sm:py-16 md:flex-row md:gap-16 md:py-20 lg:py-24 max-w-6xl mx-auto"
     >
-      <div className="flex flex-col items-center gap-6 md:items-start md:gap-8">
-        <div className="flex flex-col items-center gap-2 md:items-start">
-          <h1 className="text-foreground text-center text-3xl font-bold tracking-tight md:text-left md:text-4xl lg:text-5xl">
-            {profile.fullName}
+      {/* Left content */}
+      <div className="flex flex-col items-center gap-6 md:items-start md:gap-7">
+        {/* Greeting + Name */}
+        <div className="flex flex-col items-center gap-3 md:items-start">
+          <span className="inline-block rounded-full border border-primary/30 bg-primary/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-primary">
+            Welcome to my portfolio
+          </span>
+          <h1 className="text-foreground text-center text-3xl font-bold tracking-tight md:text-left md:text-4xl lg:text-5xl xl:text-6xl">
+            Hey, I&apos;m <span className="text-primary">Muntasir Akib</span>
           </h1>
-          <p className="text-lg font-medium md:text-xl min-h-10 flex items-center">
-            <FlipWords words={taglineWords} duration={3500} />
+          <p className="text-lg font-medium md:text-xl min-h-10 flex items-center text-muted-foreground">
+            I&apos;m a <FlipWords words={roleWords} duration={3500} />
           </p>
         </div>
 
-        <p className="text-muted-foreground max-w-xl text-center text-base leading-relaxed md:text-left">
-          {profile.bio}
+        {/* Compelling description */}
+        <p className="text-muted-foreground max-w-xl text-center text-base leading-relaxed md:text-left md:text-lg">
+          I turn ideas into real, scalable software. From pixel-perfect
+          interfaces to robust backends — if you can dream it, I can build it.
+          Let&apos;s bring your next big idea to life.
         </p>
 
+        {/* Stats bar */}
+        <div className="flex items-center gap-6 text-center md:gap-8">
+          <div>
+            <p className="text-2xl font-bold text-foreground lg:text-3xl">
+              600+
+            </p>
+            <p className="text-xs text-muted-foreground">Problems Solved</p>
+          </div>
+          <div className="h-8 w-px bg-border" />
+          <div>
+            <p className="text-2xl font-bold text-foreground lg:text-3xl">
+              10+
+            </p>
+            <p className="text-xs text-muted-foreground">Projects Built</p>
+          </div>
+          <div className="h-8 w-px bg-border" />
+          <div>
+            <p className="text-2xl font-bold text-foreground lg:text-3xl">3+</p>
+            <p className="text-xs text-muted-foreground">Hackathon Wins</p>
+          </div>
+        </div>
+
+        {/* CTA buttons */}
         <div className="flex flex-wrap items-center justify-center gap-4 md:justify-start">
           <Button asChild size="lg" className="rounded-full">
             <Link href="#contact">
-              Contact Me <ArrowRight className="ml-2 h-4 w-4" />
+              Let&apos;s Talk <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
           <Button asChild size="lg" variant="outline" className="rounded-full">
@@ -59,21 +90,25 @@ export function Hero() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Resume <Download className="ml-2 h-4 w-4" />
+              Download CV <Download className="ml-2 h-4 w-4" />
             </a>
           </Button>
         </div>
 
-        <div className="flex items-center gap-4">
+        {/* Social links */}
+        <div className="flex items-center gap-3">
+          <span className="text-xs font-medium text-muted-foreground mr-1">
+            Find me on
+          </span>
           {socialLinks.map((link) => {
             const Icon = iconMap[link.icon as keyof typeof iconMap];
             if (!Icon) return null;
             return (
               <Button
                 key={link.name}
-                variant="ghost"
+                variant="outline"
                 size="icon"
-                className="text-muted-foreground hover:text-foreground rounded-full"
+                className="text-muted-foreground hover:text-primary hover:border-primary/50 rounded-full h-9 w-9 transition-colors"
                 asChild
               >
                 <a
@@ -82,7 +117,7 @@ export function Hero() {
                   rel="noopener noreferrer"
                   aria-label={link.name}
                 >
-                  <Icon className="h-5 w-5" />
+                  <Icon className="h-4 w-4" />
                 </a>
               </Button>
             );
@@ -90,17 +125,20 @@ export function Hero() {
         </div>
       </div>
 
+      {/* Right image */}
       <div className="relative flex shrink-0 justify-center md:justify-end">
-        <div className="relative h-64 w-64 overflow-hidden rounded-full border-4 border-border md:h-80 md:w-80">
+        <div className="relative h-64 w-64 overflow-hidden   border-primary/20   md:h-96 md:w-96">
           <Image
             src={profile.avatar}
             alt={profile.fullName}
             fill
             priority
             className="object-cover"
-            sizes="(max-width: 768px) 256px, 320px"
+            sizes="(max-width: 768px) 256px, 384px"
           />
         </div>
+        {/* Decorative ring */}
+        {/* <div className="absolute inset-0 h-64 w-64  animate-[spin_25s_linear_infinite] md:h-96 md:w-96" /> */}
       </div>
     </section>
   );
