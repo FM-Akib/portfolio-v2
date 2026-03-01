@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { User } from "lucide-react";
 import { SectionWrapper } from "./section-wrapper";
 import { problemSolvingLinks, problemSolvingBio, profile } from "@/data";
 import { Card } from "@/components/ui/card";
@@ -10,9 +9,9 @@ export function About() {
   return (
     <SectionWrapper
       id="about"
-      title="About"
-      subtitle="Problem solving journey and a bit about me"
-      icon={<User className="h-6 w-6 sm:h-7 sm:w-7" />}
+      title="About Me"
+      subtitle="My problem-solving journey and what drives me as a developer"
+      icon={<span>👨‍💻</span>}
     >
       <div className="mx-auto max-w-5xl">
         <Card className="border-border bg-card text-card-foreground overflow-hidden py-0">

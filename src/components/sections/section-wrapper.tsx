@@ -29,39 +29,36 @@ export function SectionWrapper({
     <section
       id={id}
       className={cn(
-        "container scroll-mt-20 px-4 py-12  max-w-6xl mx-auto",
+        "container scroll-mt-20 px-4 py-16 max-w-6xl mx-auto",
         className,
       )}
     >
       <motion.div
-        className="mb-10 sm:mb-14 md:mb-16 text-center"
-        initial={{ opacity: 0, y: 16 }}
+        className="mb-12 text-center"
+        initial={{ opacity: 0, y: 12 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.3 }}
         transition={defaultTransition}
       >
-        <div className="inline-flex flex-col items-center gap-3">
-          <div className="flex items-center justify-center gap-3">
-            {icon && (
-              <span className="flex h-10 w-10 items-center justify-center rounded bg-primary/15 text-primary sm:h-12 sm:w-12">
-                {icon}
-              </span>
-            )}
-            <h2 className="text-foreground dark:text-primary text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
-              {title}
-            </h2>
-          </div>
-          {/* <div className="h-1 w-16 rounded-full bg-primary/60" aria-hidden /> */}
+        <div className="flex flex-col items-center gap-2">
+          {icon && (
+            <div className="mb-2 text-3xl sm:text-4xl leading-none select-none">
+              {icon}
+            </div>
+          )}
+          <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+            {title}
+          </h2>
+          {subtitle && (
+            <p className="max-w-2xl text-base text-muted-foreground sm:text-lg">
+              {subtitle}
+            </p>
+          )}
         </div>
-        {subtitle && (
-          <p className="text-muted-foreground mt-2 max-w-2xl mx-auto text-sm sm:text-base">
-            {subtitle}
-          </p>
-        )}
       </motion.div>
 
       <motion.div
-        initial={{ opacity: 0, y: 24 }}
+        initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.1 }}
         transition={{ ...defaultTransition, delay: 0.1 }}

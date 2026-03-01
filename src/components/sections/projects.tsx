@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ExternalLink, Calendar, FolderGit2 } from "lucide-react";
+import { ExternalLink, Calendar } from "lucide-react";
 import { SectionWrapper } from "./section-wrapper";
 import { projects } from "@/data";
 import {
@@ -18,9 +18,9 @@ export function Projects() {
   return (
     <SectionWrapper
       id="projects"
-      title="Projects"
-      subtitle="Selected work and contributions"
-      icon={<FolderGit2 className="h-6 w-6 sm:h-7 sm:w-7" />}
+      title="Featured Projects"
+      subtitle="Handpicked projects showcasing real-world problem solving"
+      icon={<span>🚀</span>}
     >
       <div className="mx-auto grid max-w-7xl gap-5 sm:gap-6 md:grid-cols-3 md:gap-8">
         {projects.map((project, index) => (
