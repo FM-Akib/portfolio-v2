@@ -34,12 +34,17 @@ export interface Project {
   LiveLink: string;
 }
 
+export type SkillCategory = "Frontend" | "Backend" | "Tools";
+
 export interface Skill {
   skillName: string;
   img: string;
   yearOfExperience: number;
   description: string;
   level: string;
+  category: SkillCategory;
+  icon: string; // simple-icons CDN slug
+  darkInvert?: boolean; // invert logo in dark mode (black-on-dark logos)
 }
 
 export interface EducationEntry {
