@@ -1,5 +1,13 @@
 import Link from "next/link";
-import { Mail, MapPin, Phone, Github, Linkedin, Youtube, Facebook } from "lucide-react";
+import {
+  Mail,
+  MapPin,
+  Phone,
+  Github,
+  Linkedin,
+  Youtube,
+  Facebook,
+} from "lucide-react";
 import { profile, socialLinks } from "@/data";
 
 const iconMap = {
@@ -11,17 +19,20 @@ const iconMap = {
 
 export function Footer() {
   return (
-    <footer
-      id="contact"
-      className="border-t border-border bg-muted/30"
-    >
+    <footer id="contact" className="border-t border-border bg-muted/30">
       <div className="container max-w-6xl mx-auto px-4 py-12 sm:py-14 md:py-16">
         <div className="flex flex-col items-center gap-6 sm:gap-8 text-center md:gap-12">
           <div>
             <p className="text-foreground text-xl font-semibold tracking-tight">
-              {profile.fullName}
+              {/* {profile.fullName} */}
+              Mohammad Fahim Muntasir Akib
             </p>
-            <p className="text-muted-foreground mt-1">{profile.tagline}</p>
+            <p className="text-muted-foreground mt-1 max-w-xl text-sm leading-relaxed">
+              Let&apos;s connect! I&apos;m always open to discussing new
+              projects, opportunities, or collaborations. Feel free to reach out
+              through any of the channels below.
+              {/* {profile.tagline} */}
+            </p>
           </div>
 
           <ul

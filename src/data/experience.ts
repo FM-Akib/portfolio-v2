@@ -11,15 +11,15 @@ export const experience: ExperienceEntry[] = [
       "Architecting key features for Vimz, a multivendor digital marketplace — Stripe Connect seller onboarding, real-time WebSocket notifications, granular product-level analytics & reports, a headless CMS, and a full support ticket pipeline.",
     ],
   },
-  {
-    role: "OOP Project  Mentor",
-    company: "Under the supervision of Muhammad Nazmul Arefin",
-    period: "Jul 2023 - Jan 2024",
-    logo: "/e2.webp",
-    description: [
-      "Guided 50+ students through end-to-end OOP project development — from system design and class modeling to live demonstrations — resulting in measurably stronger design-pattern understanding across the cohort.",
-    ],
-  },
+  // {
+  //   role: "OOP Project  Mentor",
+  //   company: "Under the supervision of Muhammad Nazmul Arefin",
+  //   period: "Jul 2023 - Jan 2024",
+  //   logo: "/e2.webp",
+  //   description: [
+  //     "Guided 50+ students through end-to-end OOP project development — from system design and class modeling to live demonstrations — resulting in measurably stronger design-pattern understanding across the cohort.",
+  //   ],
+  // },
   {
     role: "Teaching Assistant",
     company: "CSE-1222 Computer Programming 2 Lab, IIUC",

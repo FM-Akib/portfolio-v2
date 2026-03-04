@@ -49,10 +49,25 @@ export function Hero() {
         </div>
 
         {/* Compelling description */}
-        <p className="text-muted-foreground max-w-xl text-center text-base leading-relaxed md:text-left md:text-lg">
-          I turn ideas into real, scalable software. From pixel-perfect
-          interfaces to robust backends — if you can dream it, I can build it.
-          Let&apos;s bring your next big idea to life.
+        <p className="max-w-2xl text-center text-base leading-relaxed text-muted-foreground md:text-left md:text-lg">
+          I build scalable digital products that solve real problems — from
+          crafting seamless frontends to engineering robust backend
+          architectures. Whether it&apos;s a{" "}
+          <span className="relative inline-block font-semibold text-foreground">
+            SaaS platform
+            <span className="absolute bottom-0 left-0 h-0.5 w-full rounded-full bg-primary/60" />
+          </span>
+          {", "}
+          <span className="relative inline-block font-semibold text-foreground">
+            eCommerce system
+            <span className="absolute bottom-0 left-0 h-0.5 w-full rounded-full bg-primary/60" />
+          </span>
+          {", or a "}
+          <span className="relative inline-block font-semibold text-foreground">
+            real-time application
+            <span className="absolute bottom-0 left-0 h-0.5 w-full rounded-full bg-primary/60" />
+          </span>{" "}
+          — I turn complex challenges into elegant, production-ready solutions.
         </p>
 
         {/* Stats bar */}

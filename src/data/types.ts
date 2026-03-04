@@ -26,6 +26,7 @@ export interface KeyFeature {
 export interface Project {
   projectName: string;
   img: string;
+  img2?: string;
   keyFeature: KeyFeature[];
   projectDate: string;
   skillsArray: string[];

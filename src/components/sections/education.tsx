@@ -10,7 +10,7 @@ export function Education() {
       subtitle="Academic background and qualifications"
       icon={<span>🎓</span>}
     >
-      <EducationTimeline data={education} expandMode="multi" />
+      <EducationTimeline data={education} />
     </SectionWrapper>
   );
 }

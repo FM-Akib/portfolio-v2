@@ -1,9 +1,16 @@
+"use client";
+
 import Image from "next/image";
+import { motion } from "framer-motion";
 import { SectionWrapper } from "./section-wrapper";
 import { problemSolvingLinks, problemSolvingBio, profile } from "@/data";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Code2, Trophy, Users } from "lucide-react";
+
+const stats = [
+  { icon: Code2, value: "600+", label: "Problems Solved" },
+  { icon: Trophy, value: "70+", label: "Contests" },
+  { icon: Users, value: "2", label: "Leadership Roles" },
+];
 
 export function About() {
   return (
@@ -13,73 +20,147 @@ export function About() {
       subtitle="My problem-solving journey and what drives me as a developer"
       icon={<span>👨‍💻</span>}
     >
-      <div className="mx-auto max-w-5xl">
-        <Card className="border-border bg-card text-card-foreground overflow-hidden py-0">
-          <div className="grid gap-6 md:grid-cols-5">
-            <div className="relative h-64 w-full md:col-span-2 md:h-full min-h-50">
+      <div className="mx-auto max-w-5xl space-y-10">
+        {/* ── Top: photo + bio ── */}
+        <div className="flex flex-col gap-8 md:flex-row md:items-start md:gap-10">
+          {/* Photo */}
+          <motion.div
+            initial={{ opacity: 0, x: -24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="mx-auto shrink-0 md:mx-0"
+          >
+            <div className="relative h-56 w-44 overflow-hidden rounded-2xl border border-border shadow-lg sm:h-64 sm:w-52">
               <Image
                 src="https://i.ibb.co.com/bKcKMvT/photo-2024-10-04-00-31-35.jpg"
                 alt="Fahim Muntasir Akib"
                 fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 40vw"
+                className="object-cover object-top"
+                sizes="(max-width: 640px) 176px, 208px"
               />
             </div>
-            <div className="flex flex-col justify-center gap-4 p-6 md:col-span-3 md:p-8">
-              <p className="text-muted-foreground text-sm leading-relaxed md:text-base">
-                {problemSolvingBio}
-              </p>
-              {profile.strengths && (
-                <p className="text-muted-foreground text-sm">
-                  <span className="text-foreground font-medium">
-                    Strengths:{" "}
-                  </span>
-                  {profile.strengths}
+          </motion.div>
+
+          {/* Bio + strengths */}
+          <motion.div
+            initial={{ opacity: 0, x: 24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{
+              duration: 0.55,
+              delay: 0.1,
+              ease: [0.25, 0.46, 0.45, 0.94],
+            }}
+            className="flex flex-col gap-5"
+          >
+            <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+              {problemSolvingBio}
+            </p>
+
+            {/* Strengths pills */}
+            {profile.strengths && (
+              <div className="space-y-2">
+                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                  Strengths
                 </p>
-              )}
-              {profile.coCurricular && profile.coCurricular.length > 0 && (
-                <div>
-                  <p className="text-foreground mb-1 text-sm font-medium">
-                    Co-curricular
-                  </p>
-                  <ul className="text-muted-foreground list-inside list-disc space-y-0.5 text-sm">
-                    {profile.coCurricular.map((item, i) => (
-                      <li key={i}>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              <div className="flex flex-col gap-2">
-                {problemSolvingLinks.map((item) => (
-                  <div
-                    key={item.name}
-                    className="flex items-center justify-between gap-2 text-sm"
-                  >
-                    <span className="text-foreground font-medium">
-                      {item.name} — {item.handle}
-                    </span>
-                    <Button
-                      variant="link"
-                      size="sm"
-                      className="p-0 h-auto"
-                      asChild
+                <div className="flex flex-wrap gap-2">
+                  {profile.strengths.split(",").map((s) => (
+                    <span
+                      key={s}
+                      className="rounded-full border border-border bg-muted px-3 py-1 text-xs font-medium text-foreground"
                     >
-                      <a
-                        href={item.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary"
-                      >
-                        <ExternalLink className="mr-1 h-3.5 w-3.5" />
-                        Open
-                      </a>
-                    </Button>
-                  </div>
-                ))}
+                      {s.trim()}
+                    </span>
+                  ))}
+                </div>
               </div>
+            )}
+
+            {/* Co-curricular */}
+            {profile.coCurricular && profile.coCurricular.length > 0 && (
+              <div className="space-y-2">
+                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                  Leadership & Activities
+                </p>
+                <ul className="space-y-1.5">
+                  {profile.coCurricular.map((item, i) => (
+                    <li
+                      key={i}
+                      className="flex items-start gap-2 text-sm text-muted-foreground"
+                    >
+                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </motion.div>
+        </div>
+
+        {/* ── Stats row ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{
+            duration: 0.5,
+            delay: 0.15,
+            ease: [0.25, 0.46, 0.45, 0.94],
+          }}
+          className="grid grid-cols-3 divide-x divide-border rounded-xl border border-border bg-card"
+        >
+          {stats.map(({ icon: Icon, value, label }) => (
+            <div key={label} className="flex flex-col items-center gap-1 py-5">
+              <Icon className="h-4 w-4 text-primary mb-1" />
+              <span className="text-xl font-bold text-foreground sm:text-2xl">
+                {value}
+              </span>
+              <span className="text-center text-[11px] text-muted-foreground sm:text-xs">
+                {label}
+              </span>
             </div>
+          ))}
+        </motion.div>
+
+        {/* ── Problem-solving platforms ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{
+            duration: 0.5,
+            delay: 0.2,
+            ease: [0.25, 0.46, 0.45, 0.94],
+          }}
+          className="space-y-3"
+        >
+          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+            Online Judges
+          </p>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {problemSolvingLinks.map((item) => (
+              <a
+                key={item.name}
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3 transition-colors hover:bg-muted"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-semibold text-foreground">
+                    {item.name}
+                  </span>
+                  <span className="font-mono text-xs text-muted-foreground">
+                    {item.handle}
+                  </span>
+                </div>
+                <ExternalLink className="h-3.5 w-3.5 text-muted-foreground transition-colors group-hover:text-primary" />
+              </a>
+            ))}
           </div>
-        </Card>
+        </motion.div>
       </div>
     </SectionWrapper>
   );
