@@ -55,7 +55,13 @@ function useActiveSection() {
   return active;
 }
 
-function NavLinks({ onNavigate, active }: { onNavigate?: () => void; active: string }) {
+function NavLinks({
+  onNavigate,
+  active,
+}: {
+  onNavigate?: () => void;
+  active: string;
+}) {
   return (
     <ul className="flex flex-col gap-1 md:flex-row md:gap-0.5">
       {navLinks.map(({ href, label }) => {
@@ -101,7 +107,7 @@ export function Navbar() {
       className={cn(
         "sticky top-0 z-50 w-full border-b transition-all duration-300",
         scrolled
-          ? "border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 shadow-sm"
+          ? "border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 shadow-none"
           : "border-transparent bg-background/70 backdrop-blur-sm",
       )}
     >
@@ -155,7 +161,9 @@ export function Navbar() {
               className="border-border bg-background w-64"
             >
               <SheetHeader className="pb-4">
-                <SheetTitle className="text-foreground text-left">Navigation</SheetTitle>
+                <SheetTitle className="text-foreground text-left">
+                  Navigation
+                </SheetTitle>
               </SheetHeader>
               <div className="flex flex-col gap-4 px-2">
                 <NavLinks
@@ -163,7 +171,11 @@ export function Navbar() {
                   onNavigate={() => setSheetOpen(false)}
                 />
                 <div className="border-t border-border pt-4">
-                  <Button asChild variant="outline" className="w-full rounded-full">
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="w-full rounded-full"
+                  >
                     <a href={`tel:${profile.phone}`}>{profile.phone}</a>
                   </Button>
                 </div>
