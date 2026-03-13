@@ -106,7 +106,7 @@ function AchievementRow({ item, index }: { item: Achievement; index: number }) {
       {/* ── Content column ── */}
       <div className="flex flex-1 min-w-0 flex-col gap-4">
         {/* Faded chapter number */}
-        <span className="font-mono text-6xl font-black dark:text-gray-400 leading-none text-foreground/8 select-none -mb-2">
+        <span className="font-mono text-6xl font-black leading-none text-foreground/10 select-none -mb-2">
           {num}
         </span>
 
@@ -147,11 +147,27 @@ function AchievementRow({ item, index }: { item: Achievement; index: number }) {
 /* ── Main section ── */
 export function Achievements() {
   return (
+    <div className="relative overflow-hidden bg-muted/50 dark:bg-muted/30">
+      {/* Diagonal stripe pattern — sits above the tinted base */}
+      <div
+        className="absolute inset-0 opacity-[0.04] dark:opacity-[0.05]"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(45deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%)",
+          backgroundSize: "12px 12px",
+        }}
+        aria-hidden
+      />
+      {/* Trophy glow — amber tint */}
+      <div className="pointer-events-none absolute top-16 left-1/2 -translate-x-1/2 h-72 w-72 rounded-full bg-amber-400/12 dark:bg-amber-500/10 blur-3xl" aria-hidden />
+      <div className="pointer-events-none absolute -bottom-24 -right-24 h-56 w-56 rounded-full bg-amber-400/8 blur-3xl" aria-hidden />
+
     <SectionWrapper
       id="achievements"
       title="Achievements & Awards"
       subtitle="Competitive programming highlights and recognitions"
       icon={<span>🏆</span>}
+      className="relative z-10"
     >
       <div className="mx-auto max-w-5xl space-y-16 sm:space-y-24">
         {achievements.map((item, index) => (
@@ -163,5 +179,6 @@ export function Achievements() {
         ))}
       </div>
     </SectionWrapper>
+    </div>
   );
 }

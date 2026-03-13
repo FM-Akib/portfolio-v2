@@ -113,7 +113,7 @@ function FeaturedCard({ project, index }: { project: Project; index: number }) {
       {/* ── Content column ── */}
       <div className="flex flex-1 min-w-0 flex-col gap-5">
         {/* Chapter number */}
-        <span className="font-mono text-5xl font-black leading-none text-primary/15 dark:text-gray-600 select-none -mb-3">
+        <span className="font-mono text-5xl font-black leading-none text-foreground/8 select-none -mb-3">
           {num}
         </span>
 
@@ -162,7 +162,7 @@ function FeaturedCard({ project, index }: { project: Project; index: number }) {
             href={project.LiveLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-full bg-primary dark:bg-gray-100 px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-85"
+            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-all hover:opacity-90 hover:shadow-md shadow-sm shadow-primary/20"
           >
             Live Demo <ArrowUpRight className="h-3.5 w-3.5" />
           </a>
@@ -293,11 +293,26 @@ export function Projects() {
   const others = projects.slice(FEATURED_COUNT);
 
   return (
+    <div className="relative overflow-hidden">
+      {/* Cross-hatch pattern */}
+      <div
+        className="absolute inset-0 opacity-[0.025] dark:opacity-[0.035]"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(0deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%), repeating-linear-gradient(90deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%)",
+          backgroundSize: "28px 28px",
+        }}
+        aria-hidden
+      />
+      {/* Corner glows */}
+      <div className="pointer-events-none absolute top-0 right-0 h-96 w-96 rounded-full bg-primary/8 blur-3xl translate-x-1/3 -translate-y-1/3" aria-hidden />
+      <div className="pointer-events-none absolute bottom-0 left-0 h-64 w-64 rounded-full bg-primary/8 blur-3xl -translate-x-1/3 translate-y-1/3" aria-hidden />
     <SectionWrapper
       id="projects"
       title="Featured Projects"
       subtitle="Handpicked projects showcasing real-world problem solving"
       icon={<span>🚀</span>}
+      className="relative z-10"
     >
       {/* Story-telling featured rows */}
       <div className="mx-auto max-w-5xl space-y-20 sm:space-y-28">
@@ -333,5 +348,6 @@ export function Projects() {
         </div>
       )}
     </SectionWrapper>
+    </div>
   );
 }

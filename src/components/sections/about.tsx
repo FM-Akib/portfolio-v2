@@ -14,11 +14,26 @@ const stats = [
 
 export function About() {
   return (
-    <SectionWrapper
+    <div className="relative overflow-hidden">
+      {/* Diagonal stripes — opposite direction from experience */}
+      <div
+        className="absolute inset-0 opacity-[0.03] dark:opacity-[0.04]"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(-45deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%)",
+          backgroundSize: "12px 12px",
+        }}
+        aria-hidden
+      />
+      <div className="absolute inset-0 bg-muted/50 dark:bg-muted/30" aria-hidden />
+      {/* Blue/teal accent glow */}
+      <div className="pointer-events-none absolute bottom-0 right-0 h-80 w-80 rounded-full bg-primary/10 blur-3xl translate-x-1/3 translate-y-1/3" aria-hidden />
+      <SectionWrapper
       id="about"
       title="About Me"
       subtitle="My problem-solving journey and what drives me as a developer"
       icon={<span>👨‍💻</span>}
+      className="relative z-10"
     >
       <div className="mx-auto max-w-5xl space-y-10">
         {/* ── Top: photo + bio ── */}
@@ -163,5 +178,6 @@ export function About() {
         </motion.div>
       </div>
     </SectionWrapper>
+    </div>
   );
 }

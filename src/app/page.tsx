@@ -14,7 +14,7 @@ import {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-background text-foreground bg-pattern">
+    <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       <main className="pb-20 md:pb-0">
         <Hero />
