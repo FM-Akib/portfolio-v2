@@ -7,3 +7,4 @@ export { Projects } from "./projects";
 export { Achievements } from "./achievements";
 export { Footer } from "./footer";
 export { SectionWrapper } from "./section-wrapper";
+export { AIAgent } from "./ai-agent";

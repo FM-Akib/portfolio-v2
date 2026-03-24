@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Outfit, Poppins } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { AIAgent } from "@/components/sections";
 import "./globals.css";
 
 // Body & headings: Outfit (400 regular, 600 semi-bold)
@@ -42,7 +43,10 @@ export default function RootLayout({
       <body
         className={`${outfit.variable} ${poppins.variable} font-sans antialiased`}
       >
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          {children}
+          <AIAgent />
+        </ThemeProvider>
       </body>
     </html>
   );

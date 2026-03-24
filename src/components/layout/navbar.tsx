@@ -25,7 +25,6 @@ const navLinks = [
   { href: "#education", label: "Education" },
   { href: "#achievements", label: "Achievements" },
   { href: "#about", label: "About" },
-  { href: "#contact", label: "Contact" },
 ];
 
 const sectionIds = navLinks.map((l) => l.href.replace("#", ""));
