@@ -45,8 +45,8 @@ export function Education() {
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
           {/* ── Education timeline ── */}
           <div className="lg:col-span-7">
-            <p className="meta text-muted-foreground mb-6">{"// formal"}</p>
-            <ol className="relative space-y-6 border-l border-border pl-8">
+            <p className="meta text-muted-foreground mb-6 ml-11">{"// formal"}</p>
+            <ol className="relative space-y-6 border-l border-border ml-3 pl-8">
               {education.map((item, i) => (
                 <li
                   key={i}
@@ -54,7 +54,7 @@ export function Education() {
                   className="relative"
                 >
                   <span
-                    className="absolute -left-[2.1rem] top-1.5 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-card"
+                    className="absolute -left-[2.75rem] top-1.5 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-card"
                     aria-hidden
                   >
                     <GraduationCap className="h-3 w-3 text-primary" />

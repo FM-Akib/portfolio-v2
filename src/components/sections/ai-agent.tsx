@@ -188,30 +188,97 @@ function FloatingTrigger({
   hasUnread: boolean;
 }) {
   return (
-    <motion.button
-      onClick={onClick}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      className="relative flex items-center gap-2.5 pl-3 pr-4 py-2.5 rounded-full bg-amber-700 text-amber-950 shadow-xl shadow-amber-400/40 cursor-pointer select-none"
-      aria-label="Open AI Chat"
-    >
-      {/* <span className="absolute inset-0 rounded-full bg-amber-400 animate-ping opacity-20" /> */}
-      <div className="relative w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center shrink-0 text-base">
-        😎
-        <span className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-amber-400" />
-      </div>
-      <div className="text-left text-white">
-        <p className="text-[14px] font-bold leading-none">Virtual Akib</p>
-        <p className="text-[10px] opacity-70 leading-none mt-0.5">
-          is here · Ask me anything
+    <div className="relative flex flex-col items-end gap-2.5">
+      {/* Speech-bubble teaser */}
+      <motion.div
+        initial={{ opacity: 0, y: 8, scale: 0.9 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ delay: 0.8, type: "spring", stiffness: 280, damping: 22 }}
+        className="relative hidden sm:block px-3 py-1.5 rounded-2xl rounded-br-sm bg-white border border-amber-200 shadow-lg shadow-amber-500/10"
+      >
+        <p className="text-[11px] font-medium text-gray-700 whitespace-nowrap">
+          <span className="text-amber-600 font-semibold">Hey!</span> Got questions? <span className="font-semibold">Ask me</span> 👋
         </p>
-      </div>
-      {hasUnread && (
-        <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white text-[8px] text-white flex items-center justify-center font-bold">
-          1
-        </span>
-      )}
-    </motion.button>
+        <span
+          aria-hidden
+          className="absolute -bottom-[5px] right-5 w-2.5 h-2.5 bg-white border-r border-b border-amber-200 rotate-45"
+        />
+      </motion.div>
+
+      {/* Trigger pill */}
+      <motion.button
+        onClick={onClick}
+        whileHover={{ scale: 1.04, y: -2 }}
+        whileTap={{ scale: 0.96 }}
+        animate={{
+          boxShadow: [
+            "0 10px 30px -8px rgba(245, 158, 11, 0.5)",
+            "0 14px 36px -6px rgba(245, 158, 11, 0.7)",
+            "0 10px 30px -8px rgba(245, 158, 11, 0.5)",
+          ],
+        }}
+        transition={{
+          boxShadow: { duration: 2.4, repeat: Infinity, ease: "easeInOut" },
+        }}
+        className="group relative flex items-center gap-2.5 pl-1.5 pr-4 py-1.5 rounded-full bg-linear-to-r from-amber-600 via-amber-500 to-orange-500 cursor-pointer select-none overflow-hidden"
+        aria-label="Open AI Chat"
+      >
+        {/* Shimmer sweep on hover */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/35 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-out"
+        />
+
+        {/* Avatar + pulsing ring + status dot */}
+        <div className="relative shrink-0">
+          <span
+            aria-hidden
+            className="absolute inset-0 rounded-full bg-white/50 animate-ping opacity-60"
+          />
+          <div className="relative w-10 h-10 rounded-full bg-white ring-2 ring-white/90 flex items-center justify-center text-xl shadow-inner">
+            <motion.span
+              animate={{ rotate: [0, -12, 12, -8, 8, 0] }}
+              transition={{
+                duration: 1.6,
+                repeat: Infinity,
+                repeatDelay: 2.5,
+                ease: "easeInOut",
+              }}
+              className="inline-block"
+            >
+              😎
+            </motion.span>
+          </div>
+          <span className="absolute -bottom-0.5 -right-0.5 flex h-3 w-3">
+            <span className="absolute inline-flex h-full w-full rounded-full bg-green-400 animate-ping opacity-75" />
+            <span className="relative inline-flex h-3 w-3 rounded-full bg-green-500 border-2 border-white" />
+          </span>
+        </div>
+
+        {/* Label */}
+        <div className="relative text-left text-white">
+          <div className="flex items-center gap-1">
+            <p className="text-[13px] font-extrabold leading-none tracking-tight">
+              Virtual Akib
+            </p>
+            <Sparkles className="w-3 h-3 text-yellow-100 fill-yellow-100" />
+          </div>
+          <p className="text-[9px] uppercase tracking-[0.12em] font-semibold opacity-90 leading-none mt-1">
+            Ask me anything →
+          </p>
+        </div>
+
+        {/* Unread badge */}
+        {hasUnread && (
+          <span className="absolute -top-1 -right-1 flex h-4 w-4">
+            <span className="absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75 animate-ping" />
+            <span className="relative inline-flex w-4 h-4 bg-red-500 rounded-full border-2 border-white text-[8px] text-white items-center justify-center font-bold">
+              1
+            </span>
+          </span>
+        )}
+      </motion.button>
+    </div>
   );
 }
 
