@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import {
   Github,
   Linkedin,
@@ -10,11 +9,11 @@ import {
   Facebook,
   ArrowRight,
   Download,
-  ChevronDown,
+  MapPin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { FlipWords } from "@/components/ui/flip-words";
 import { profile, socialLinks } from "@/data";
+import { useGsap, gsap } from "@/lib/use-gsap";
 
 const iconMap = {
   linkedin: Linkedin,
@@ -23,254 +22,300 @@ const iconMap = {
   facebook: Facebook,
 };
 
-const roleWords = [
-  "Full-Stack Developer",
-  "Software Engineer",
-  "Problem Solver",
+const MARQUEE_ITEMS = [
+  "Full-Stack",
+  "TypeScript",
+  "React",
+  "Next.js",
+  "Node",
+  "MongoDB",
+  "Postgres",
+  "Stripe",
+  "WebSockets",
+  "Available for hire",
+  "Chattogram → World",
 ];
-
-const FLOAT_BADGES = [
-  { label: "React", color: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20", pos: "top-4 -left-8 sm:-left-12" },
-  { label: "Next.js", color: "bg-foreground/5 text-foreground border-border", pos: "top-1/3 -right-6 sm:-right-10" },
-  { label: "Node.js", color: "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20", pos: "bottom-16 -left-6 sm:-left-10" },
-  { label: "TypeScript", color: "bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20", pos: "bottom-4 -right-4 sm:-right-8" },
-];
-
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1 } },
-};
-
-const EASE = [0.25, 0.46, 0.45, 0.94] as const;
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.55, ease: EASE },
-  },
-};
-
-const imageVariants = {
-  hidden: { opacity: 0, scale: 0.92, x: 30 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    x: 0,
-    transition: { duration: 0.7, ease: EASE, delay: 0.2 },
-  },
-};
 
 export function Hero() {
+  const ref = useGsap<HTMLElement>((ctx) => {
+    ctx.add(() => {
+      const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
+
+      tl.from("[data-hero='eyebrow']", { y: 30, opacity: 0, duration: 0.7 })
+        .from(
+          "[data-hero='line']",
+          { y: 80, opacity: 0, duration: 1, stagger: 0.08 },
+          "-=0.45",
+        )
+        .from("[data-hero='lede']", { y: 24, opacity: 0, duration: 0.8 }, "-=0.55")
+        .from(
+          "[data-hero='meta'] > *",
+          { y: 16, opacity: 0, duration: 0.6, stagger: 0.08 },
+          "-=0.55",
+        )
+        .from(
+          "[data-hero='cta']",
+          { y: 16, opacity: 0, duration: 0.6, stagger: 0.08 },
+          "-=0.5",
+        )
+        .from(
+          "[data-hero='portrait']",
+          { scale: 0.92, opacity: 0, rotate: -3, duration: 1.1, ease: "expo.out" },
+          "-=0.8",
+        )
+        .from(
+          "[data-hero='ticker']",
+          { y: 24, opacity: 0, duration: 0.7 },
+          "-=0.4",
+        );
+
+      // Floating portrait
+      gsap.to("[data-hero='portrait']", {
+        y: -12,
+        duration: 4,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1,
+      });
+    });
+  }, []);
+
   return (
     <section
+      ref={ref}
       id="hero"
-      className="relative bg-pattern flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center px-4 py-16 sm:py-20 md:py-24"
+      className="relative isolate overflow-hidden pt-32 sm:pt-40 pb-20 sm:pb-24"
     >
-      {/* Ambient blobs */}
-      <div className="pointer-events-none absolute top-1/4 left-1/4 h-72 w-72 rounded-full bg-primary/8 blur-3xl" aria-hidden />
-      <div className="pointer-events-none absolute bottom-1/4 right-1/4 h-48 w-48 rounded-full bg-primary/6 blur-2xl" aria-hidden />
-      <div className="container max-w-6xl mx-auto flex flex-col items-center gap-10 sm:gap-12 md:flex-row md:gap-16">
-      {/* Left content */}
-      <motion.div
-        className="flex flex-col items-center gap-6 md:items-start md:gap-7 flex-1"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        {/* Greeting pill */}
-        <motion.div variants={itemVariants}>
-          <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-primary">
-            <span className="relative flex h-2 w-2 shrink-0">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
-            </span>
-            Welcome to my portfolio
-          </span>
-        </motion.div>
+      {/* Backdrop layers */}
+      <div className="bg-grid absolute inset-0 -z-10 opacity-60" aria-hidden />
+      <div
+        className="vignette pointer-events-none absolute inset-0 -z-10"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute -top-40 right-[-10%] -z-10 h-[480px] w-[480px] rounded-full bg-primary/15 blur-3xl"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute bottom-[-20%] left-[-10%] -z-10 h-[420px] w-[420px] rounded-full bg-accent/15 blur-3xl"
+        aria-hidden
+      />
 
-        {/* Name */}
-        <motion.div variants={itemVariants} className="flex flex-col items-center gap-2 md:items-start">
-          <h1 className="font-display text-foreground text-center text-4xl font-bold tracking-tight md:text-left md:text-5xl lg:text-6xl">
-            Hey, I&apos;m{" "}
-            <span className="text-primary">
-              Muntasir Akib
+      <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-12 px-6 sm:px-10 lg:grid-cols-12 lg:gap-10">
+        {/* ─── Left: text ─── */}
+        <div className="lg:col-span-7 flex flex-col gap-8 lg:gap-10">
+          {/* Eyebrow */}
+          <div
+            data-hero="eyebrow"
+            className="flex flex-wrap items-center gap-3"
+          >
+            <span className="meta inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              </span>
+              Available — Q3 2026
+            </span>
+            <span className="meta text-muted-foreground inline-flex items-center gap-1.5">
+              <MapPin className="h-3 w-3" />
+              {profile.location}
+            </span>
+          </div>
+
+          {/* Display lockup */}
+          <h1 className="text-display text-foreground text-[clamp(3.5rem,10vw,9rem)]">
+            <span data-hero="line" className="block">
+              Muntasir
+            </span>
+            <span data-hero="line" className="block">
+              <span className="italic-accent text-primary">Akib</span>
+              <span className="meta text-muted-foreground align-top ml-3 hidden sm:inline-block">
+                — full-stack
+              </span>
+            </span>
+            <span
+              data-hero="line"
+              className="block text-muted-foreground"
+            >
+              <span className="italic-accent">building</span>{" "}
+              <span className="text-foreground">things</span>.
             </span>
           </h1>
-          <div className="text-base font-medium md:text-lg min-h-8 flex items-center text-muted-foreground">
-            I&apos;m a <FlipWords words={roleWords} duration={3500} />
-          </div>
-        </motion.div>
 
-        {/* Description */}
-        <motion.p
-          variants={itemVariants}
-          className="max-w-lg text-center text-sm leading-relaxed text-muted-foreground md:text-left md:text-base"
-        >
-          I build scalable digital products that solve real problems — from
-          crafting seamless frontends to engineering robust backend
-          architectures. Turning complex challenges into elegant,
-          production-ready solutions.
-        </motion.p>
-
-        {/* Stats */}
-        <motion.div
-          variants={itemVariants}
-          className="flex items-center gap-6 text-center md:gap-8"
-        >
-          <div>
-            <p className="text-2xl font-bold text-foreground lg:text-3xl">600+</p>
-            <p className="text-xs text-muted-foreground mt-0.5">Problems Solved</p>
-          </div>
-          <div className="h-8 w-px bg-border shrink-0" />
-          <div>
-            <p className="text-2xl font-bold text-foreground lg:text-3xl">10+</p>
-            <p className="text-xs text-muted-foreground mt-0.5">Projects Built</p>
-          </div>
-          <div className="h-8 w-px bg-border shrink-0" />
-          <div>
-            <p className="text-2xl font-bold text-foreground lg:text-3xl">3+</p>
-            <p className="text-xs text-muted-foreground mt-0.5">Hackathon Wins</p>
-          </div>
-        </motion.div>
-
-        {/* CTA Buttons */}
-        <motion.div
-          variants={itemVariants}
-          className="flex flex-wrap items-center justify-center gap-3 md:justify-start"
-        >
-          <Button asChild size="lg" className="rounded-full gap-2 px-6 shadow-md shadow-primary/20">
-            <Link href="#contact">
-              Let&apos;s Talk <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
-          <Button
-            asChild
-            size="lg"
-            variant="outline"
-            className="rounded-full gap-2 px-6"
+          {/* Lede */}
+          <p
+            data-hero="lede"
+            className="max-w-xl text-base sm:text-lg text-muted-foreground leading-relaxed"
           >
-            <a
-              href={profile.resumeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Download CV <Download className="h-4 w-4" />
-            </a>
-          </Button>
-        </motion.div>
+            I engineer SaaS platforms, multivendor marketplaces, and
+            payment-grade systems — translating ambiguous problems into{" "}
+            <span className="italic-accent text-foreground">
+              precise, production-ready
+            </span>{" "}
+            software. Currently architecting Office-X & Vimz at RILO.
+          </p>
 
-        {/* Social links */}
-        <motion.div
-          variants={itemVariants}
-          className="flex items-center gap-2"
-        >
-          <span className="text-xs font-medium text-muted-foreground">
-            Find me on
-          </span>
-          <div className="flex items-center gap-1.5">
-            {socialLinks.map((link) => {
-              const Icon = iconMap[link.icon as keyof typeof iconMap];
-              if (!Icon) return null;
-              return (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={link.name}
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-all duration-200 hover:border-primary/40 hover:text-primary hover:shadow-sm hover:-translate-y-0.5"
-                >
-                  <Icon className="h-3.5 w-3.5" />
-                </a>
-              );
-            })}
+          {/* Meta strip — three stats */}
+          <div
+            data-hero="meta"
+            className="grid grid-cols-3 max-w-md border-t border-b border-border/80 divide-x divide-border/80"
+          >
+            <Stat value="600+" label="Problems Solved" />
+            <Stat value="10+" label="Shipped Projects" />
+            <Stat value="3×" label="Hackathon Wins" />
           </div>
-        </motion.div>
-      </motion.div>
 
-      {/* Right — profile image */}
-      <motion.div
-        className="relative flex shrink-0 items-center justify-center"
-        variants={imageVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        {/* Glow */}
-        <div className="absolute inset-[-15%] rounded-full bg-primary/15 blur-3xl" />
-
-        {/* Static ring */}
-        <div className="absolute inset-[-4px] rounded-full border-2 border-primary/20" />
-
-        {/* Spinning arc */}
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-          className="absolute inset-[-4px] rounded-full border-2 border-t-primary border-r-transparent border-b-transparent border-l-transparent"
-        />
-
-        {/* Image container */}
-        <div className="relative h-56 w-56 overflow-hidden rounded-full border-4 border-background shadow-2xl sm:h-64 sm:w-64 md:h-72 md:w-72 lg:h-80 lg:w-80">
-          <Image
-            src={profile.avatar}
-            alt={profile.fullName}
-            fill
-            priority
-            className="object-cover object-top"
-            sizes="(max-width: 640px) 224px, (max-width: 768px) 256px, (max-width: 1024px) 288px, 320px"
-          />
+          {/* CTAs */}
+          <div className="flex flex-wrap items-center gap-3">
+            <Button
+              data-hero="cta"
+              asChild
+              size="lg"
+              className="group rounded-full gap-2 pl-5 pr-4 h-11 shadow-md shadow-primary/20"
+            >
+              <Link href="#contact">
+                Start a project
+                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary-foreground/15 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </span>
+              </Link>
+            </Button>
+            <Button
+              data-hero="cta"
+              asChild
+              size="lg"
+              variant="outline"
+              className="rounded-full gap-2 h-11"
+            >
+              <a
+                href={profile.resumeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Download className="h-3.5 w-3.5" />
+                Download CV
+              </a>
+            </Button>
+            <div
+              data-hero="cta"
+              className="flex items-center gap-1.5 pl-1"
+            >
+              {socialLinks.map((link) => {
+                const Icon = iconMap[link.icon as keyof typeof iconMap];
+                if (!Icon) return null;
+                return (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={link.name}
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-all duration-300"
+                  >
+                    <Icon className="h-3.5 w-3.5" />
+                  </a>
+                );
+              })}
+            </div>
+          </div>
         </div>
 
-        {/* Floating tech badges */}
-        {FLOAT_BADGES.map((badge, i) => (
-          <motion.div
-            key={badge.label}
-            className={`absolute ${badge.pos} hidden sm:block`}
-            initial={{ opacity: 0, scale: 0.6 }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-              y: [0, -6, 0],
-            }}
-            transition={{
-              opacity: { delay: 0.8 + i * 0.15, duration: 0.4 },
-              scale: { delay: 0.8 + i * 0.15, duration: 0.4 },
-              y: {
-                delay: 1.2 + i * 0.2,
-                duration: 3 + i * 0.5,
-                repeat: Infinity,
-                ease: "easeInOut",
-              },
-            }}
+        {/* ─── Right: portrait ─── */}
+        <div className="lg:col-span-5 relative flex items-center justify-center">
+          <div
+            data-hero="portrait"
+            className="relative w-full max-w-md"
           >
-            <span
-              className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold shadow-lg backdrop-blur-sm ${badge.color}`}
-            >
-              {badge.label}
+            {/* Index ticker — bottom row */}
+            <span className="meta absolute -left-2 -top-2 rotate-[-3deg] rounded-sm bg-primary px-2 py-1 text-primary-foreground shadow-md z-20">
+              FM/001 · 2026
             </span>
-          </motion.div>
-        ))}
-      </motion.div>
 
-      {/* Scroll indicator */}
-      <motion.div
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-1"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5, duration: 0.5 }}
+            {/* The polaroid frame */}
+            <div className="relative aspect-[4/5] overflow-hidden rounded-sm border border-border bg-card shadow-2xl shadow-foreground/10 rotate-[1.5deg]">
+              <Image
+                src={profile.avatar}
+                alt={profile.fullName}
+                fill
+                priority
+                className="object-cover object-top grayscale-[15%] saturate-[1.05]"
+                sizes="(max-width: 1024px) 80vw, 480px"
+              />
+              {/* Inner caption */}
+              <div className="absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-3 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-5 text-white">
+                <div>
+                  <p className="font-display text-2xl italic leading-none">
+                    Akib
+                  </p>
+                  <p className="meta opacity-80 mt-1.5">Chattogram · BD</p>
+                </div>
+                <span className="meta rounded-full border border-white/20 bg-white/10 px-2.5 py-1 backdrop-blur">
+                  PORTRAIT_01
+                </span>
+              </div>
+            </div>
+
+            {/* Floating annotation cards */}
+            <div className="absolute -left-6 sm:-left-12 top-12 z-20 rotate-[-6deg] hidden sm:block">
+              <div className="rounded-sm border border-border bg-card px-3 py-2 shadow-lg">
+                <p className="meta text-muted-foreground">{"// stack"}</p>
+                <p className="font-display text-lg text-foreground italic">
+                  React · Node
+                </p>
+              </div>
+            </div>
+
+            <div className="absolute -right-4 sm:-right-10 bottom-20 z-20 rotate-[5deg] hidden sm:block">
+              <div className="rounded-sm border border-border bg-card px-3 py-2 shadow-lg">
+                <p className="meta text-muted-foreground">{"// shipping"}</p>
+                <p className="font-display text-lg italic">
+                  <span className="text-primary">Office-X</span>{" "}
+                  <span className="text-foreground">+ Vimz</span>
+                </p>
+              </div>
+            </div>
+
+            {/* Bottom signature line */}
+            <div className="mt-6 flex items-center justify-between">
+              <span className="meta text-muted-foreground">
+                ↑ signed_by_akib
+              </span>
+              <span className="meta text-muted-foreground">EST. 2021</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ─── Marquee ticker ─── */}
+      <div
+        data-hero="ticker"
+        className="mt-20 sm:mt-28 border-y border-border overflow-hidden bg-card/40"
       >
-        <span className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
-          Scroll
-        </span>
-        <motion.div
-          animate={{ y: [0, 6, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <ChevronDown className="h-4 w-4 text-muted-foreground" />
-        </motion.div>
-      </motion.div>
+        <div className="flex marquee-track whitespace-nowrap py-4">
+          {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
+            <span
+              key={i}
+              className="font-display text-3xl sm:text-4xl px-8 flex items-center gap-8 text-foreground"
+            >
+              <span>{item}</span>
+              <span aria-hidden className="text-primary text-2xl">
+                ✦
+              </span>
+            </span>
+          ))}
+        </div>
       </div>
     </section>
+  );
+}
+
+function Stat({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="px-4 py-3 first:pl-0">
+      <p className="font-display text-3xl sm:text-4xl text-foreground leading-none">
+        {value}
+      </p>
+      <p className="meta mt-1 text-muted-foreground">{label}</p>
+    </div>
   );
 }

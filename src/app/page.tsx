@@ -8,7 +8,7 @@ import {
   Projects,
   Education,
   Achievements,
-  About,
+  Contact,
   Footer,
 } from "@/components/sections";
 
@@ -16,14 +16,14 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
-      <main className="pb-20 md:pb-0">
+      <main className="pb-24 md:pb-0">
         <Hero />
         <Experience />
         <Skills />
         <Projects />
         <Education />
         <Achievements />
-        <About />
+        <Contact />
         <Footer />
       </main>
       <MobileBottomNav />

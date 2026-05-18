@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { Menu } from "lucide-react";
+import { Menu, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -16,15 +15,13 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { profile } from "@/data";
 import { cn } from "@/lib/utils";
 
-const LOGO_URL = "https://i.ibb.co/DWxtttS/logo.png";
-
 const navLinks = [
-  { href: "#experience", label: "Experience" },
-  { href: "#skills", label: "Skills" },
-  { href: "#projects", label: "Projects" },
-  { href: "#education", label: "Education" },
-  { href: "#achievements", label: "Achievements" },
-  { href: "#about", label: "About" },
+  { href: "#work", label: "Work", num: "01" },
+  { href: "#skills", label: "Stack", num: "02" },
+  { href: "#projects", label: "Projects", num: "03" },
+  { href: "#education", label: "Path", num: "04" },
+  { href: "#achievements", label: "Awards", num: "05" },
+  { href: "#contact", label: "Contact", num: "06" },
 ];
 
 const sectionIds = navLinks.map((l) => l.href.replace("#", ""));
@@ -34,7 +31,6 @@ function useActiveSection() {
 
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
-
     sectionIds.forEach((id) => {
       const el = document.getElementById(id);
       if (!el) return;
@@ -47,56 +43,35 @@ function useActiveSection() {
       obs.observe(el);
       observers.push(obs);
     });
-
     return () => observers.forEach((o) => o.disconnect());
   }, []);
 
   return active;
 }
 
-function NavLinks({
-  onNavigate,
-  active,
-}: {
-  onNavigate?: () => void;
-  active: string;
-}) {
-  return (
-    <ul className="flex flex-col gap-1 md:flex-row md:gap-0.5">
-      {navLinks.map(({ href, label }) => {
-        const id = href.replace("#", "");
-        const isActive = active === id;
-        return (
-          <li key={href}>
-            <Link
-              href={href}
-              onClick={onNavigate}
-              className={cn(
-                "relative px-3 py-1.5 rounded-md text-sm font-medium transition-colors duration-200 block",
-                isActive
-                  ? "text-primary"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/60",
-              )}
-            >
-              {label}
-              {isActive && (
-                <span className="absolute bottom-0 left-3 right-3 h-0.5 rounded-full bg-primary md:block hidden" />
-              )}
-            </Link>
-          </li>
-        );
-      })}
-    </ul>
-  );
+function useScrollProgress() {
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    const onScroll = () => {
+      const h = document.documentElement;
+      const scrolled = h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight);
+      setProgress(scrolled);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  return progress;
 }
 
 export function Navbar() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const active = useActiveSection();
+  const progress = useScrollProgress();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => setScrolled(window.scrollY > 12);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -104,44 +79,62 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 w-full border-b transition-all duration-300",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
         scrolled
-          ? "border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 shadow-none"
-          : "border-transparent bg-background/70 backdrop-blur-sm",
+          ? "border-b border-border bg-background/80 backdrop-blur-xl"
+          : "border-b border-transparent bg-transparent",
       )}
     >
-      <nav className="container flex h-14 items-center justify-between px-4 md:px-6 max-w-6xl mx-auto">
-        {/* Logo */}
-        <Link
-          href="#hero"
-          className="relative h-9 w-28 sm:h-10 sm:w-32 dark:flex dark:items-center dark:justify-center shrink-0"
-          aria-label="Home"
-        >
-          <Image
-            src={LOGO_URL}
-            alt="FM-Akib"
-            fill
-            className="object-contain object-left dark:hidden"
-            sizes="(max-width: 640px) 112px, 128px"
-            priority
-          />
-          <span className="text-lg font-bold tracking-tight text-foreground hidden dark:block">
-            <span className="text-amber-400">FM</span>
-            <span className="text-muted-foreground">-</span>Akib
+      <nav className="mx-auto flex h-16 max-w-[1320px] items-center justify-between px-6 sm:px-10">
+        {/* Wordmark */}
+        <Link href="#hero" aria-label="Home" className="group flex items-baseline gap-2">
+          <span className="font-display text-2xl tracking-tight text-foreground">
+            Akib
+          </span>
+          <span className="italic-accent text-primary text-base">.dev</span>
+          <span className="meta hidden md:inline ml-2 text-muted-foreground">
+            / FM-001
           </span>
         </Link>
 
         {/* Desktop nav */}
-        <div className="hidden md:flex md:items-center">
-          <NavLinks active={active} />
+        <div className="hidden md:flex items-center gap-1">
+          {navLinks.map(({ href, label, num }) => {
+            const id = href.replace("#", "");
+            const isActive = active === id;
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={cn(
+                  "group relative flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors duration-200",
+                  isActive
+                    ? "text-foreground"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                <span className="meta text-[9px] opacity-50 group-hover:opacity-100">
+                  {num}
+                </span>
+                <span>{label}</span>
+                {isActive && (
+                  <span
+                    aria-hidden
+                    className="absolute -bottom-0.5 left-3 right-3 h-px bg-primary"
+                  />
+                )}
+              </Link>
+            );
+          })}
         </div>
 
         {/* Desktop right */}
-        <div className="hidden md:flex md:items-center md:gap-2 shrink-0">
+        <div className="hidden md:flex items-center gap-3">
           <ThemeToggle />
-          <Button asChild size="sm" className="rounded-full text-xs px-4">
-            <a href={`tel:${profile.phone}`} aria-label="Call">
-              {profile.phone}
+          <Button asChild size="sm" className="rounded-full gap-1.5 pl-4 pr-3">
+            <a href={`mailto:${profile.email}`}>
+              Hire me
+              <ArrowUpRight className="h-3.5 w-3.5" />
             </a>
           </Button>
         </div>
@@ -155,34 +148,46 @@ export function Navbar() {
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent
-              side="right"
-              className="border-border bg-background w-64"
-            >
-              <SheetHeader className="pb-4">
-                <SheetTitle className="text-foreground text-left">
-                  Navigation
+            <SheetContent side="right" className="w-72 border-border bg-background">
+              <SheetHeader className="pb-6">
+                <SheetTitle className="text-left">
+                  <span className="meta text-muted-foreground">Index —</span>
                 </SheetTitle>
               </SheetHeader>
-              <div className="flex flex-col gap-4 px-2">
-                <NavLinks
-                  active={active}
-                  onNavigate={() => setSheetOpen(false)}
-                />
-                <div className="border-t border-border pt-4">
-                  <Button
-                    asChild
-                    variant="outline"
-                    className="w-full rounded-full"
-                  >
-                    <a href={`tel:${profile.phone}`}>{profile.phone}</a>
-                  </Button>
-                </div>
+              <ul className="flex flex-col gap-1 px-2">
+                {navLinks.map(({ href, label, num }) => (
+                  <li key={href}>
+                    <Link
+                      href={href}
+                      onClick={() => setSheetOpen(false)}
+                      className="group flex items-baseline justify-between border-b border-border/60 py-3 hover:text-primary transition-colors"
+                    >
+                      <span className="font-display text-2xl text-foreground group-hover:text-primary transition-colors">
+                        {label}
+                      </span>
+                      <span className="meta text-muted-foreground">{num}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-8 px-2">
+                <Button asChild className="w-full rounded-full">
+                  <a href={`mailto:${profile.email}`}>
+                    Hire me <ArrowUpRight className="h-3.5 w-3.5 ml-1.5" />
+                  </a>
+                </Button>
               </div>
             </SheetContent>
           </Sheet>
         </div>
       </nav>
+
+      {/* Scroll progress bar */}
+      <div
+        className="h-px origin-left bg-primary/80 transition-transform duration-150"
+        style={{ transform: `scaleX(${progress})` }}
+        aria-hidden
+      />
     </header>
   );
 }

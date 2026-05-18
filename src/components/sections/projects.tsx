@@ -1,31 +1,47 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { ExternalLink, Github, Calendar, ArrowUpRight } from "lucide-react";
+import { ExternalLink, Github, ArrowUpRight } from "lucide-react";
 import { SectionWrapper } from "./section-wrapper";
 import { projects } from "@/data";
 import { Badge } from "@/components/ui/badge";
+import { useGsap, gsap } from "@/lib/use-gsap";
 import type { Project } from "@/data/types";
 
-/* ─── tiny sub-components ─────────────────────────────────── */
-
-function BrowserFrame({ src, alt }: { src: string; alt: string }) {
+// ── Browser chrome frame ──────────────────────────────────────────────
+function BrowserFrame({
+  src,
+  alt,
+  url,
+}: {
+  src: string;
+  alt: string;
+  url: string;
+}) {
+  let display = url;
+  try {
+    display = new URL(url).host;
+  } catch {
+    /* keep raw */
+  }
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-card shadow-2xl">
-      {/* chrome bar */}
-      <div className="flex items-center gap-1.5 border-b border-border bg-muted px-4 py-2.5">
-        <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
-        <span className="h-2.5 w-2.5 rounded-full bg-yellow-400" />
-        <span className="h-2.5 w-2.5 rounded-full bg-green-400" />
-        <div className="ml-3 h-4 flex-1 rounded bg-background/60 border border-border/50" />
+    <div className="overflow-hidden rounded-md border border-border bg-card shadow-xl shadow-foreground/5">
+      <div className="flex items-center gap-2 border-b border-border bg-muted/60 px-4 py-2.5">
+        <div className="flex gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-full bg-foreground/20" />
+          <span className="h-2.5 w-2.5 rounded-full bg-foreground/20" />
+          <span className="h-2.5 w-2.5 rounded-full bg-foreground/20" />
+        </div>
+        <div className="meta ml-4 flex-1 truncate rounded-sm border border-border bg-background/60 px-2.5 py-1 text-muted-foreground">
+          ⌁ {display}
+        </div>
       </div>
-      <div className="relative aspect-video w-full overflow-hidden">
+      <div className="relative aspect-[16/10] w-full overflow-hidden">
         <Image
           src={src}
           alt={alt}
           fill
-          className="object-cover object-top"
+          className="object-cover object-top transition-transform duration-[1.2s] ease-out hover:scale-[1.03]"
           sizes="(max-width: 768px) 100vw, 55vw"
         />
       </div>
@@ -33,147 +49,116 @@ function BrowserFrame({ src, alt }: { src: string; alt: string }) {
   );
 }
 
-function MobileFrame({ src, alt }: { src: string; alt: string }) {
-  return (
-    <div className="overflow-hidden rounded-[1.6rem] border-[3px] border-border bg-card shadow-xl w-28 sm:w-32">
-      <div className="flex items-center justify-between bg-muted px-3 py-1">
-        <span className="text-[8px] font-medium text-muted-foreground">
-          9:41
-        </span>
-        <div className="flex gap-0.5">
-          <span className="h-1 w-1 rounded-full bg-muted-foreground/60" />
-          <span className="h-1 w-1 rounded-full bg-muted-foreground/60" />
-          <span className="h-1 w-1 rounded-full bg-muted-foreground/60" />
-        </div>
-      </div>
-      <div className="relative aspect-9/16">
-        <Image
-          src={src}
-          alt={alt}
-          fill
-          className="object-cover object-top"
-          sizes="130px"
-        />
-      </div>
-    </div>
-  );
-}
-
-/* ─── Featured story card ─────────────────────────────────── */
-
+// ── Featured case-study card ──────────────────────────────────────────
 function FeaturedCard({ project, index }: { project: Project; index: number }) {
   const isEven = index % 2 === 0;
   const num = String(index + 1).padStart(2, "0");
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{
-        duration: 0.6,
-        delay: index * 0.1,
-        ease: [0.25, 0.46, 0.45, 0.94],
-      }}
-      className={`flex flex-col gap-10 lg:items-center ${
-        isEven ? "lg:flex-row" : "lg:flex-row-reverse"
-      }`}
+    <article
+      data-project
+      className="relative grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12 lg:items-center"
     >
-      {/* ── Image column ── */}
-      <div className="relative flex-1 min-w-0">
-        {/* Decorative glow blob */}
-        <div
-          className={`pointer-events-none absolute -z-10 h-64 w-64 rounded-full bg-primary/20 blur-3xl ${
-            isEven ? "-left-10 -top-10" : "-right-10 -top-10"
-          }`}
+      {/* Number stamp — absolute */}
+      <span
+        aria-hidden
+        className={`pointer-events-none absolute font-display text-[12rem] sm:text-[18rem] leading-none text-primary/10 select-none -z-10 ${
+          isEven ? "-top-12 -left-4" : "-top-12 -right-4"
+        }`}
+      >
+        {num}
+      </span>
+
+      {/* Image column */}
+      <div
+        className={`relative lg:col-span-7 ${
+          isEven ? "lg:order-1" : "lg:order-2"
+        }`}
+      >
+        <BrowserFrame
+          src={project.img}
+          alt={project.projectName}
+          url={project.LiveLink}
         />
-
-        {/* Browser screenshot */}
-        <BrowserFrame src={project.img} alt={project.projectName} />
-
-        {/* Floating mobile frame — bottom-opposite corner */}
         {project.img2 && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.85, rotate: isEven ? 4 : -4 }}
-            whileInView={{ opacity: 1, scale: 1, rotate: isEven ? 4 : -4 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.25 + index * 0.1 }}
-            className={`absolute -bottom-6 shadow-2xl ${
-              isEven ? "-right-4 sm:-right-6" : "-left-4 sm:-left-6"
-            }`}
+          <div
+            className={`absolute -bottom-8 ${
+              isEven ? "-right-2 sm:right-8" : "-left-2 sm:left-8"
+            } w-28 sm:w-36 rotate-[-4deg] overflow-hidden rounded-md border-2 border-card bg-card shadow-2xl`}
           >
-            <MobileFrame
-              src={project.img2}
-              alt={`${project.projectName} mobile`}
-            />
-          </motion.div>
+            <div className="relative aspect-[9/16]">
+              <Image
+                src={project.img2}
+                alt={`${project.projectName} mobile`}
+                fill
+                className="object-cover object-top"
+                sizes="160px"
+              />
+            </div>
+          </div>
         )}
       </div>
 
-      {/* ── Content column ── */}
-      <div className="flex flex-1 min-w-0 flex-col gap-5">
-        {/* Chapter number */}
-        <span className="font-mono text-5xl font-black leading-none text-foreground/8 select-none -mb-3">
-          {num}
-        </span>
-
-        {/* Title + date row */}
-        <div className="flex flex-wrap items-start justify-between gap-2">
-          <h3 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl leading-tight">
-            {project.projectName}
-          </h3>
-          <span className="flex items-center gap-1 rounded-full border border-border bg-muted px-3 py-1 text-xs text-muted-foreground shrink-0">
-            <Calendar className="h-3 w-3" />
-            {project.projectDate}
-          </span>
+      {/* Content column */}
+      <div
+        className={`flex flex-col gap-5 lg:col-span-5 ${
+          isEven ? "lg:order-2" : "lg:order-1"
+        }`}
+      >
+        <div className="flex items-center gap-3 text-muted-foreground">
+          <span className="meta text-primary">CASE_{num}</span>
+          <span aria-hidden className="h-px w-12 bg-border" />
+          <span className="meta">{project.projectDate}</span>
         </div>
 
-        {/* Key features */}
+        <h3 className="text-display text-foreground text-4xl sm:text-5xl">
+          {project.projectName}
+        </h3>
+
         <div className="space-y-3">
           {project.keyFeature.map((feat, i) => (
-            <div key={i} className="flex gap-3">
-              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                <span className="font-semibold text-foreground">
-                  {feat.title}:{" "}
-                </span>
-                {feat.description}
-              </p>
-            </div>
+            <p
+              key={i}
+              className="text-base leading-relaxed text-muted-foreground"
+            >
+              <span className="italic-accent text-foreground">
+                {feat.title}.{" "}
+              </span>
+              {feat.description}
+            </p>
           ))}
         </div>
 
-        {/* Tech stack */}
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap gap-1.5 pt-1">
           {project.skillsArray.map((skill) => (
             <Badge
               key={skill}
-              variant="secondary"
-              className="rounded-full text-xs font-medium"
+              variant="outline"
+              className="rounded-full border-border text-xs font-mono font-normal"
             >
               {skill}
             </Badge>
           ))}
         </div>
 
-        {/* Action links */}
-        <div className="flex flex-wrap gap-2 pt-1">
+        <div className="flex flex-wrap gap-2 pt-2">
           <a
             href={project.LiveLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-all hover:opacity-90 hover:shadow-md shadow-sm shadow-primary/20"
+            className="group inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-colors hover:bg-primary"
           >
-            Live Demo <ArrowUpRight className="h-3.5 w-3.5" />
+            View live
+            <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:rotate-45" />
           </a>
           {project.githubLink && (
             <a
               href={project.githubLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-muted"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
             >
-              <Github className="h-3.5 w-3.5" /> Client
+              <Github className="h-3.5 w-3.5" /> Source
             </a>
           )}
           {project.githubServer && (
@@ -181,80 +166,62 @@ function FeaturedCard({ project, index }: { project: Project; index: number }) {
               href={project.githubServer}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-muted"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
             >
               <Github className="h-3.5 w-3.5" /> Server
             </a>
           )}
         </div>
       </div>
-    </motion.div>
+    </article>
   );
 }
 
-/* ─── Compact card (grid) ─────────────────────────────────── */
-
+// ── Compact card ──────────────────────────────────────────────────────
 function CompactCard({ project, index }: { project: Project; index: number }) {
+  const num = String(index + 4).padStart(2, "0");
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{
-        duration: 0.4,
-        delay: index * 0.08,
-        ease: [0.25, 0.46, 0.45, 0.94],
-      }}
-      className="group flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-shadow hover:shadow-lg"
+    <article
+      data-project-compact
+      className="group relative flex flex-col overflow-hidden rounded-md border border-border bg-card transition-all duration-500 hover:border-primary/40 hover:shadow-xl hover:shadow-foreground/5"
     >
-      {/* Image */}
-      <div className="relative aspect-video w-full overflow-hidden bg-muted">
+      <div className="relative aspect-[16/10] w-full overflow-hidden bg-muted">
         <Image
           src={project.img}
           alt={project.projectName}
           fill
-          className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+          className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, 33vw"
         />
-        {/* date pill overlay */}
-        <span className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-background/80 px-2 py-0.5 text-[10px] text-muted-foreground backdrop-blur-sm">
-          <Calendar className="h-2.5 w-2.5" />
-          {project.projectDate}
+        <span className="meta absolute right-3 top-3 rounded-sm bg-background/90 px-2 py-1 text-foreground backdrop-blur">
+          {num}
         </span>
       </div>
-
-      <div className="flex flex-1 flex-col gap-3 p-4">
-        <h4 className="font-semibold text-foreground leading-snug">
-          {project.projectName}
-        </h4>
-
-        <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3">
+      <div className="flex flex-1 flex-col gap-3 p-5">
+        <div className="flex items-center justify-between gap-3">
+          <h4 className="font-display text-2xl text-foreground leading-tight">
+            {project.projectName}
+          </h4>
+          <span className="meta text-muted-foreground shrink-0">
+            {project.projectDate}
+          </span>
+        </div>
+        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
           {project.keyFeature[0]?.description}
         </p>
-
-        <div className="flex flex-wrap gap-1">
-          {project.skillsArray.slice(0, 4).map((skill) => (
-            <Badge
-              key={skill}
-              variant="secondary"
-              className="rounded-full text-[10px]"
-            >
-              {skill}
-            </Badge>
+        <div className="flex flex-wrap gap-1 mt-1">
+          {project.skillsArray.slice(0, 4).map((s) => (
+            <span key={s} className="meta rounded-sm border border-border px-1.5 py-0.5 text-muted-foreground">
+              {s}
+            </span>
           ))}
-          {project.skillsArray.length > 4 && (
-            <Badge variant="outline" className="rounded-full text-[10px]">
-              +{project.skillsArray.length - 4}
-            </Badge>
-          )}
         </div>
-
-        <div className="mt-auto flex flex-wrap gap-1.5 border-t border-border pt-3">
+        <div className="mt-auto flex flex-wrap gap-1.5 border-t border-border/60 pt-3">
           <a
             href={project.LiveLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary/20"
+            className="inline-flex items-center gap-1 text-sm font-medium text-foreground hover:text-primary transition-colors link-underline"
           >
             Live <ExternalLink className="h-3 w-3" />
           </a>
@@ -263,91 +230,87 @@ function CompactCard({ project, index }: { project: Project; index: number }) {
               href={project.githubLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+              className="ml-auto inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
             >
-              <Github className="h-3 w-3" /> Client
-            </a>
-          )}
-          {project.githubServer && (
-            <a
-              href={project.githubServer}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              <Github className="h-3 w-3" /> Server
+              <Github className="h-3 w-3" />
             </a>
           )}
         </div>
       </div>
-    </motion.div>
+    </article>
   );
 }
 
-/* ─── Main section ────────────────────────────────────────── */
-
+// ── Main section ──────────────────────────────────────────────────────
 const FEATURED_COUNT = 3;
 
 export function Projects() {
   const featured = projects.slice(0, FEATURED_COUNT);
   const others = projects.slice(FEATURED_COUNT);
 
+  const ref = useGsap<HTMLDivElement>((ctx) => {
+    ctx.add(() => {
+      gsap.utils.toArray<HTMLElement>("[data-project]").forEach((el) => {
+        gsap.from(el, {
+          scrollTrigger: { trigger: el, start: "top 80%" },
+          y: 80,
+          opacity: 0,
+          duration: 1.1,
+          ease: "expo.out",
+        });
+      });
+      gsap.utils.toArray<HTMLElement>("[data-project-compact]").forEach((el, i) => {
+        gsap.from(el, {
+          scrollTrigger: { trigger: el, start: "top 88%" },
+          y: 40,
+          opacity: 0,
+          duration: 0.7,
+          delay: (i % 3) * 0.08,
+          ease: "expo.out",
+        });
+      });
+    });
+  }, []);
+
   return (
-    <div className="relative overflow-hidden">
-      {/* Cross-hatch pattern */}
+    <div ref={ref} className="relative overflow-hidden">
       <div
-        className="absolute inset-0 opacity-[0.025] dark:opacity-[0.035]"
-        style={{
-          backgroundImage:
-            "repeating-linear-gradient(0deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%), repeating-linear-gradient(90deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%)",
-          backgroundSize: "28px 28px",
-        }}
+        className="bg-grid-sm pointer-events-none absolute inset-0 opacity-40"
         aria-hidden
       />
-      {/* Corner glows */}
-      <div className="pointer-events-none absolute top-0 right-0 h-96 w-96 rounded-full bg-primary/8 blur-3xl translate-x-1/3 -translate-y-1/3" aria-hidden />
-      <div className="pointer-events-none absolute bottom-0 left-0 h-64 w-64 rounded-full bg-primary/8 blur-3xl -translate-x-1/3 translate-y-1/3" aria-hidden />
-    <SectionWrapper
-      id="projects"
-      title="Featured Projects"
-      subtitle="Handpicked projects showcasing real-world problem solving"
-      icon={<span>🚀</span>}
-      className="relative z-10"
-    >
-      {/* Story-telling featured rows */}
-      <div className="mx-auto max-w-5xl space-y-20 sm:space-y-28">
-        {featured.map((project, index) => (
-          <FeaturedCard
-            key={project.projectName}
-            project={project}
-            index={index}
-          />
-        ))}
-      </div>
-
-      {/* Divider + label */}
-      {others.length > 0 && (
-        <div className="mx-auto mt-20 max-w-5xl">
-          <div className="mb-8 flex items-center gap-4">
-            <div className="h-px flex-1 bg-border" />
-            <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-              More Projects
-            </span>
-            <div className="h-px flex-1 bg-border" />
-          </div>
-
-          <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3">
-            {others.map((project, index) => (
-              <CompactCard
-                key={project.projectName}
-                project={project}
-                index={index}
-              />
-            ))}
-          </div>
+      <SectionWrapper
+        id="projects"
+        index="03"
+        eyebrow="SELECTED · 2022–2026"
+        title="Field"
+        italic="notes."
+        subtitle="Case studies from production. Each entry is a real problem solved — full-stack systems, payment infrastructure, multi-tenant dashboards, real-time pipelines."
+        className="relative z-10"
+      >
+        <div className="space-y-32 sm:space-y-44">
+          {featured.map((p, i) => (
+            <FeaturedCard key={p.projectName} project={p} index={i} />
+          ))}
         </div>
-      )}
-    </SectionWrapper>
+
+        {others.length > 0 && (
+          <div className="mt-32">
+            <div className="mb-10 flex items-end justify-between gap-6 border-b border-border pb-4">
+              <h3 className="text-display text-2xl sm:text-3xl">
+                More from the <span className="italic-accent text-primary">archive</span>
+              </h3>
+              <span className="meta text-muted-foreground">
+                {String(others.length).padStart(2, "0")} ENTRIES
+              </span>
+            </div>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {others.map((p, i) => (
+                <CompactCard key={p.projectName} project={p} index={i} />
+              ))}
+            </div>
+          </div>
+        )}
+      </SectionWrapper>
     </div>
   );
 }

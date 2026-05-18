@@ -1,76 +1,115 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useGsap, gsap } from "@/lib/use-gsap";
 import { cn } from "@/lib/utils";
 
 interface SectionWrapperProps {
   id?: string;
-  title: string;
+  index?: string; // e.g. "02"
+  eyebrow?: string; // small mono label e.g. "WORK / 2021—NOW"
+  title: React.ReactNode;
+  italic?: React.ReactNode; // optional italic accent in the title
   subtitle?: string;
-  icon?: React.ReactNode;
   children: React.ReactNode;
   className?: string;
+  align?: "left" | "center";
 }
-
-const defaultTransition = {
-  duration: 0.55,
-  ease: [0.25, 0.46, 0.45, 0.94] as const,
-};
 
 export function SectionWrapper({
   id,
+  index,
+  eyebrow,
   title,
+  italic,
   subtitle,
-  icon,
   children,
   className,
+  align = "left",
 }: SectionWrapperProps) {
+  const ref = useGsap<HTMLElement>((ctx) => {
+    ctx.add(() => {
+      gsap.from("[data-reveal='header'] > *", {
+        scrollTrigger: {
+          trigger: "[data-reveal='header']",
+          start: "top 85%",
+        },
+        y: 36,
+        opacity: 0,
+        stagger: 0.08,
+        duration: 0.8,
+        ease: "expo.out",
+      });
+    });
+  }, []);
+
   return (
     <section
+      ref={ref}
       id={id}
       className={cn(
-        "container scroll-mt-20 px-4 py-16 sm:py-20 max-w-6xl mx-auto",
+        "relative scroll-mt-20 px-6 sm:px-10 py-24 sm:py-32 max-w-[1320px] mx-auto",
         className,
       )}
     >
-      <motion.div
-        className="mb-12 text-center"
-        initial={{ opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={defaultTransition}
+      <div
+        data-reveal="header"
+        className={cn(
+          "mb-16 sm:mb-20 grid gap-6",
+          align === "center"
+            ? "place-items-center text-center"
+            : "grid-cols-1 md:grid-cols-12 items-end",
+        )}
       >
-        <div className="flex flex-col items-center gap-3">
-          {icon && (
-            <div className="mb-1 text-3xl sm:text-4xl leading-none select-none">
-              {icon}
-            </div>
-          )}
-          <h2 className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            {title}
-          </h2>
-          {/* Accent underline */}
-          <div className="flex items-center gap-2 mt-1">
-            <div className="h-0.5 w-8 rounded-full bg-primary/40" />
-            <div className="h-1 w-10 rounded-full bg-primary" />
-            <div className="h-0.5 w-8 rounded-full bg-primary/40" />
+        {/* Eyebrow + index column */}
+        {(eyebrow || index) && (
+          <div
+            className={cn(
+              "flex items-center gap-4",
+              align === "left" && "md:col-span-4",
+            )}
+          >
+            {index && (
+              <span className="meta text-primary">[ {index} ]</span>
+            )}
+            {eyebrow && (
+              <>
+                <span aria-hidden className="h-px w-8 bg-border" />
+                <span className="meta">{eyebrow}</span>
+              </>
+            )}
           </div>
-          {subtitle && (
-            <p className="max-w-2xl text-sm text-muted-foreground sm:text-base mt-1 leading-relaxed">
-              {subtitle}
-            </p>
-          )}
-        </div>
-      </motion.div>
+        )}
 
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.08 }}
-        transition={{ ...defaultTransition, delay: 0.1 }}
-      >
-        {children}
-      </motion.div>
+        {/* Title column */}
+        <h2
+          className={cn(
+            "text-display text-foreground text-5xl sm:text-6xl md:text-7xl",
+            align === "left" && "md:col-span-8",
+          )}
+        >
+          {title}
+          {italic && (
+            <>
+              <br />
+              <span className="italic-accent text-primary">{italic}</span>
+            </>
+          )}
+        </h2>
+
+        {/* Subtitle row */}
+        {subtitle && (
+          <p
+            className={cn(
+              "max-w-prose text-base sm:text-lg text-muted-foreground leading-relaxed",
+              align === "left" && "md:col-span-8 md:col-start-5",
+            )}
+          >
+            {subtitle}
+          </p>
+        )}
+      </div>
+
+      {children}
     </section>
   );
 }
