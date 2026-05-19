@@ -12,7 +12,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { profile } from "@/data";
+import { openAIChat } from "@/components/sections";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
@@ -21,7 +21,7 @@ const navLinks = [
   { href: "#projects", label: "Projects", num: "03" },
   { href: "#education", label: "Path", num: "04" },
   { href: "#achievements", label: "Awards", num: "05" },
-  { href: "#contact", label: "Contact", num: "06" },
+  { href: "#contact", label: "Contact", num: "06", chat: true },
 ];
 
 const sectionIds = navLinks.map((l) => l.href.replace("#", ""));
@@ -99,20 +99,17 @@ export function Navbar() {
 
         {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-1">
-          {navLinks.map(({ href, label, num }) => {
+          {navLinks.map(({ href, label, num, chat }) => {
             const id = href.replace("#", "");
             const isActive = active === id;
-            return (
-              <Link
-                key={href}
-                href={href}
-                className={cn(
-                  "group relative flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors duration-200",
-                  isActive
-                    ? "text-foreground"
-                    : "text-muted-foreground hover:text-foreground",
-                )}
-              >
+            const className = cn(
+              "group relative flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors duration-200",
+              isActive
+                ? "text-foreground"
+                : "text-muted-foreground hover:text-foreground",
+            );
+            const inner = (
+              <>
                 <span className="meta text-[9px] opacity-50 group-hover:opacity-100">
                   {num}
                 </span>
@@ -123,6 +120,24 @@ export function Navbar() {
                     className="absolute -bottom-0.5 left-3 right-3 h-px bg-primary"
                   />
                 )}
+              </>
+            );
+            if (chat) {
+              return (
+                <button
+                  key={href}
+                  type="button"
+                  onClick={openAIChat}
+                  className={className}
+                  aria-label="Open chat with Virtual Akib"
+                >
+                  {inner}
+                </button>
+              );
+            }
+            return (
+              <Link key={href} href={href} className={className}>
+                {inner}
               </Link>
             );
           })}
@@ -131,11 +146,13 @@ export function Navbar() {
         {/* Desktop right */}
         <div className="hidden md:flex items-center gap-3">
           <ThemeToggle />
-          <Button asChild size="sm" className="rounded-full gap-1.5 pl-4 pr-3">
-            <a href={`mailto:${profile.email}`}>
-              Hire me
-              <ArrowUpRight className="h-3.5 w-3.5" />
-            </a>
+          <Button
+            size="sm"
+            className="rounded-full gap-1.5 pl-4 pr-3"
+            onClick={openAIChat}
+          >
+            Hire me
+            <ArrowUpRight className="h-3.5 w-3.5" />
           </Button>
         </div>
 
@@ -155,26 +172,46 @@ export function Navbar() {
                 </SheetTitle>
               </SheetHeader>
               <ul className="flex flex-col gap-1 px-2">
-                {navLinks.map(({ href, label, num }) => (
+                {navLinks.map(({ href, label, num, chat }) => (
                   <li key={href}>
-                    <Link
-                      href={href}
-                      onClick={() => setSheetOpen(false)}
-                      className="group flex items-baseline justify-between border-b border-border/60 py-3 hover:text-primary transition-colors"
-                    >
-                      <span className="font-display text-2xl text-foreground group-hover:text-primary transition-colors">
-                        {label}
-                      </span>
-                      <span className="meta text-muted-foreground">{num}</span>
-                    </Link>
+                    {chat ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSheetOpen(false);
+                          openAIChat();
+                        }}
+                        className="group flex w-full items-baseline justify-between border-b border-border/60 py-3 hover:text-primary transition-colors text-left"
+                      >
+                        <span className="font-display text-2xl text-foreground group-hover:text-primary transition-colors">
+                          {label}
+                        </span>
+                        <span className="meta text-muted-foreground">{num}</span>
+                      </button>
+                    ) : (
+                      <Link
+                        href={href}
+                        onClick={() => setSheetOpen(false)}
+                        className="group flex items-baseline justify-between border-b border-border/60 py-3 hover:text-primary transition-colors"
+                      >
+                        <span className="font-display text-2xl text-foreground group-hover:text-primary transition-colors">
+                          {label}
+                        </span>
+                        <span className="meta text-muted-foreground">{num}</span>
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>
               <div className="mt-8 px-2">
-                <Button asChild className="w-full rounded-full">
-                  <a href={`mailto:${profile.email}`}>
-                    Hire me <ArrowUpRight className="h-3.5 w-3.5 ml-1.5" />
-                  </a>
+                <Button
+                  className="w-full rounded-full"
+                  onClick={() => {
+                    setSheetOpen(false);
+                    openAIChat();
+                  }}
+                >
+                  Hire me <ArrowUpRight className="h-3.5 w-3.5 ml-1.5" />
                 </Button>
               </div>
             </SheetContent>

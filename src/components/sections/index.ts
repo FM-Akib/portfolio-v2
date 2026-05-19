@@ -7,4 +7,4 @@ export { Achievements } from "./achievements";
 export { Contact } from "./contact";
 export { Footer } from "./footer";
 export { SectionWrapper } from "./section-wrapper";
-export { AIAgent } from "./ai-agent";
+export { AIAgent, openAIChat } from "./ai-agent";

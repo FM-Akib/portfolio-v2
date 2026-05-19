@@ -1,8 +1,9 @@
 "use client";
 
-import { ArrowUpRight, Copy, Check, Mail, Phone, MapPin } from "lucide-react";
+import { ArrowUpRight, Copy, Check, Mail, Phone, MapPin, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { profile, socialLinks } from "@/data";
+import { openAIChat } from "./ai-agent";
 import { useGsap, gsap } from "@/lib/use-gsap";
 
 export function Contact() {
@@ -110,12 +111,19 @@ export function Contact() {
               {profile.email}
             </a>
             <div className="mt-auto flex flex-wrap items-center gap-2 pt-4 border-t border-border/60">
-              <a
-                href={`mailto:${profile.email}?subject=Project%20inquiry`}
+              <button
+                onClick={openAIChat}
                 className="group inline-flex items-center gap-2 rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background transition-colors hover:bg-primary"
               >
-                Send a brief
+                <Sparkles className="h-3.5 w-3.5" />
+                Chat with Virtual Akib
                 <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:rotate-45" />
+              </button>
+              <a
+                href={`mailto:${profile.email}?subject=Project%20inquiry`}
+                className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+              >
+                <Mail className="h-3.5 w-3.5" /> Email
               </a>
               <button
                 onClick={copyEmail}
